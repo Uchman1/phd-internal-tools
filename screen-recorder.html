@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Screen Recorder</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 40px;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 30px;
+}
+
+.container {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: auto;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.start { background: #16a34a; color: white; }
+.stop { background: #dc2626; color: white; }
+.download { background: #2563eb; color: white; }
+
+video {
+    margin-top: 20px;
+    width: 100%;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Enterprise Screen Recorder</h1>
+
+<div class="container">
+    <button class="start" onclick="startRecording()">Start Recording</button>
+    <button class="stop" onclick="stopRecording()" disabled id="stopBtn">Stop Recording</button>
+    <button class="download" onclick="downloadRecording()" disabled id="downloadBtn">Download</button>
+
+    <video id="preview" controls></video>
+</div>
+
+<script>
+let mediaRecorder;
+let recordedChunks = [];
+let recordedBlob;
+
+async function startRecording() {
+
+    recordedChunks = [];
+
+    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: { cursor: "always" },
+        audio: true
+    });
+
+    const micStream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+    });
+
+    const audioContext = new AudioContext();
+    const destination = audioContext.createMediaStreamDestination();
+
+    const systemSource = audioContext.createMediaStreamSource(screenStream);
+    const micSource = audioContext.createMediaStreamSource(micStream);
+
+    systemSource.connect(destination);
+    micSource.connect(destination);
+
+    const combinedStream = new MediaStream([
+        ...screenStream.getVideoTracks(),
+        ...destination.stream.getAudioTracks()
+    ]);
+
+    mediaRecorder = new MediaRecorder(combinedStream, {
+        mimeType: "video/webm; codecs=vp9"
+    });
+
+    mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+        recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+        document.getElementById("preview").src = URL.createObjectURL(recordedBlob);
+        document.getElementById("downloadBtn").disabled = false;
+    };
+
+    mediaRecorder.start();
+
+    document.getElementById("stopBtn").disabled = false;
+}
+
+function stopRecording() {
+    mediaRecorder.stop();
+    document.getElementById("stopBtn").disabled = true;
+}
+
+function downloadRecording() {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(recordedBlob);
+    a.download = "recording.webm";
+    a.click();
+}
+</script>
+
+</body>
+</html>
