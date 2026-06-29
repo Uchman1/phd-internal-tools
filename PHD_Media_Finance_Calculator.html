@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHD Media &amp; Finance Calculator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap');
+
+:root{
+  --purple:#3A008C;
+  --purple-deep:#22005A;
+  --lime:#9FEA47;
+  --coral:#FF7373;
+  --lavender:#9B83FF;
+  --pink:#FF70F2;
+  --ink:#1A0A3D;
+  --paper:#FAF8FF;
+  --line:#E3DCF7;
+  --mono:#6E63A0;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Bricolage Grotesque', sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===== Header ===== */
+.topbar{
+  background:var(--purple);
+  padding:22px clamp(18px,4vw,48px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 2px 0 rgba(0,0,0,0.06);
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand img{height:30px;display:block;}
+.brand .divider{width:1px;height:24px;background:rgba(255,255,255,0.3);}
+.brand .tag{
+  font-family:'Syne',sans-serif;
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:0.3px;
+  line-height:1.2;
+}
+.brand .tag span{display:block;font-weight:500;font-size:11px;opacity:0.75;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px;}
+.live-clock{
+  font-family:'Syne',sans-serif;
+  color:var(--lime);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.5px;
+  text-align:right;
+}
+.live-clock small{display:block;color:rgba(255,255,255,0.65);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;}
+
+/* ===== Hero ===== */
+.hero{
+  padding:46px clamp(18px,4vw,48px) 30px;
+  max-width:1280px;
+  margin:0 auto;
+}
+.hero .eyebrow{
+  font-family:'Syne',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  color:var(--purple);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.hero .eyebrow::before{
+  content:'';
+  width:8px;height:8px;border-radius:50%;
+  background:var(--coral);
+  display:inline-block;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:clamp(30px,4.2vw,52px);
+  line-height:1.04;
+  margin:14px 0 14px;
+  letter-spacing:-0.5px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(100deg,var(--purple),var(--lavender));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.hero p.lede{
+  max-width:620px;
+  font-size:16px;
+  line-height:1.55;
+  color:#4B4470;
+  margin:0;
+}
+.hero .stats{
+  display:flex;
+  gap:clamp(20px,4vw,42px);
+  margin-top:30px;
+  flex-wrap:wrap;
+}
+.hero .stats div{display:flex;flex-direction:column;}
+.hero .stats .num{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;color:var(--purple);}
+.hero .stats .lbl{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--mono);font-weight:600;margin-top:2px;}
+
+/* ===== Layout ===== */
+.app{
+  max-width:1280px;
+  margin:0 auto;
+  padding:0 clamp(18px,4vw,48px) 70px;
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:28px;
+}
+@media (max-width:880px){
+  .app{grid-template-columns:1fr;}
+}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  position:sticky;
+  top:96px;
+  align-self:start;
+  max-height:calc(100vh - 116px);
+  overflow-y:auto;
+  padding-right:4px;
+}
+@media (max-width:880px){
+  .sidebar{position:static;max-height:none;}
+}
+.search-box{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:16px;
+}
+.search-box svg{flex-shrink:0;opacity:0.5;}
+.search-box input{
+  border:none;outline:none;width:100%;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:14px;background:transparent;color:var(--ink);
+}
+.cat-group{margin-bottom:6px;}
+.cat-btn{
+  width:100%;
+  text-align:left;
+  background:none;border:none;
+  padding:11px 14px;
+  border-radius:10px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--ink);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  transition:background .15s;
+}
+.cat-btn:hover{background:#F0EBFF;}
+.cat-btn.active{background:var(--purple);color:#fff;}
+.cat-btn .count{
+  font-size:11px;font-weight:600;
+  background:rgba(0,0,0,0.08);
+  border-radius:20px;padding:2px 8px;
+  color:inherit;opacity:0.7;
+}
+.cat-btn.active .count{background:rgba(255,255,255,0.2);opacity:1;}
+
+/* ===== Main panel ===== */
+.panel-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.panel-head h2{
+  font-family:'Syne',sans-serif;
+  font-size:22px;
+  font-weight:800;
+  margin:0;
+  color:var(--purple-deep);
+}
+.panel-head .sub{font-size:13px;color:var(--mono);font-weight:500;}
+
+.grid-formulas{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:14px;
+}
+
+.f-card{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:14px;
+  padding:18px 18px 16px;
+  cursor:pointer;
+  transition:border-color .15s, transform .15s, box-shadow .15s;
+  position:relative;
+  overflow:hidden;
+}
+.f-card::before{
+  content:'';
+  position:absolute;top:0;left:0;height:4px;width:100%;
+  background:var(--lavender);
+  opacity:0;
+  transition:opacity .15s;
+}
+.f-card:hover{border-color:var(--lavender);transform:translateY(-2px);box-shadow:0 8px 18px rgba(58,0,140,0.08);}
+.f-card:hover::before{opacity:1;}
+.f-card.selected{border-color:var(--purple);box-shadow:0 8px 22px rgba(58,0,140,0.18);}
+.f-card.selected::before{opacity:1;background:var(--coral);}
+.f-card h3{
+  font-family:'Syne',sans-serif;
+  font-size:15px;font-weight:700;
+  margin:0 0 6px;color:var(--ink);
+}
+.f-card p{
+  font-size:12.5px;color:var(--mono);line-height:1.4;margin:0;
+}
+
+.empty-state{
+  border:1.5px dashed var(--line);
+  border-radius:14px;
+  padding:50px 20px;
+  text-align:center;
+  color:var(--mono);
+  font-size:14px;
+}
+
+/* ===== Calculator drawer ===== */
+.calc-overlay{
+  position:fixed;inset:0;
+  background:rgba(26,10,61,0.45);
+  backdrop-filter:blur(2px);
+  z-index:90;
+  display:none;
+  align-items:flex-start;
+  justify-content:flex-end;
+}
+.calc-overlay.open{display:flex;}
+.calc-drawer{
+  width:min(440px,100%);
+  height:100%;
+  background:var(--paper);
+  box-shadow:-12px 0 40px rgba(0,0,0,0.18);
+  overflow-y:auto;
+  animation:slidein .25s ease;
+}
+@keyframes slidein{from{transform:translateX(40px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.calc-head{
+  background:var(--purple);
+  color:#fff;
+  padding:24px 26px 20px;
+  position:relative;
+}
+.calc-head .close-btn{
+  position:absolute;top:18px;right:18px;
+  background:rgba(255,255,255,0.15);
+  border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.calc-head .close-btn:hover{background:rgba(255,255,255,0.28);}
+.calc-head .eyebrow{
+  font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;
+  font-weight:700;color:var(--lime);font-family:'Syne',sans-serif;
+}
+.calc-head h3{
+  font-family:'Syne',sans-serif;
+  font-size:22px;font-weight:800;margin:8px 0 8px;padding-right:30px;
+}
+.calc-head .formula-strip{
+  font-family:'Syne',sans-serif;
+  font-size:12.5px;
+  background:rgba(255,255,255,0.12);
+  border-radius:8px;
+  padding:8px 12px;
+  margin-top:4px;
+  letter-spacing:0.2px;
+}
+.calc-body{padding:24px 26px 40px;}
+.field{margin-bottom:16px;}
+.field label{
+  display:block;font-size:12.5px;font-weight:700;
+  margin-bottom:6px;color:var(--purple-deep);
+  font-family:'Syne',sans-serif;
+}
+.field input{
+  width:100%;
+  padding:11px 13px;
+  border:1.5px solid var(--line);
+  border-radius:9px;
+  font-size:15px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  outline:none;
+  transition:border-color .15s, box-shadow .15s;
+  background:#fff;
+}
+.field input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(58,0,140,0.1);}
+.field .hint{font-size:11px;color:var(--mono);margin-top:4px;}
+
+.calc-btn{
+  width:100%;
+  background:var(--purple);
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:14.5px;
+  cursor:pointer;
+  margin-top:6px;
+  transition:background .15s, transform .15s;
+}
+.calc-btn:hover{background:var(--purple-deep);}
+.calc-btn:active{transform:scale(0.98);}
+
+.result-box{
+  margin-top:22px;
+  border-radius:14px;
+  padding:22px;
+  background:var(--ink);
+  color:#fff;
+  display:none;
+}
+.result-box.show{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.result-box .r-label{
+  font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--lime);font-weight:700;font-family:'Syne',sans-serif;
+}
+.result-box .r-value{
+  font-family:'Syne',sans-serif;
+  font-size:36px;font-weight:800;margin:8px 0 4px;
+  word-break:break-word;
+  color:#fff;
+}
+.result-box .r-purpose{font-size:12.5px;color:rgba(255,255,255,0.65);line-height:1.5;}
+.result-box.warn{background:#5A1A1A;}
+.result-box.warn .r-label{color:var(--coral);}
+
+.error-msg{
+  color:#C4133C;
+  font-size:12.5px;
+  font-weight:600;
+  margin-top:6px;
+  display:none;
+}
+.error-msg.show{display:block;}
+
+footer{
+  text-align:center;
+  padding:26px 18px 40px;
+  font-size:11.5px;
+  color:var(--mono);
+  font-family:'Syne',sans-serif;
+  letter-spacing:0.3px;
+}
+
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4EAAANFCAYAAAB1CorsAAAACXBIWXMAAAsSAAALEgHS3X78AAAgAElEQVR4nOzdvXWb2bXH4X29nJMJYrIDsgPhZicTO+DbgdiBeCsYugIdVzByhsxwBeZUYCo+gaUK5gYANfqihh8A9sHB86ylNWONg38o6ad93v/5/fffAwAAAAAAAIAx/CV7AAAAAAAAAACbIwIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAAAAAAABiICAwAAAAAAAAwEBEYAAAAAAAAYCAiMAAAAAAAAMBARGAAAAAAAACAgYjAAAAAAAAAAAMRgQEAAAAAAAAGIgIDAAAAAAAADEQEBgAA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AAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAoRAQGAAAAAAAAKEQEBgAAAAAAAChEBAYAAAAAAAAo5P8Ab3mAoQQlUfMAAAAASUVORK5CYII=" alt="PHD logo">
+    <div class="divider"></div>
+    <div class="tag">Media &amp; Finance Suite<span>Calculation Engine</span></div>
+  </div>
+  <div class="live-clock" id="clock"><small>Lagos</small>--:--:--</div>
+</div>
+
+<div class="hero">
+  <div class="eyebrow" id="hero-eyebrow">Formulas · Disciplines</div>
+  <h1>Every number a media<br><em>plan runs on</em>, in one place.</h1>
+  <p class="lede">From reach and frequency to NPV and CLV/CAC — pick a formula, drop in your figures, and get the calculation instantly. Built for planners, buyers and finance leads who need the right number, fast.</p>
+  <div class="stats">
+    <div><span class="num" id="stat-total">96</span><span class="lbl">Formulas</span></div>
+    <div><span class="num" id="stat-cats">8</span><span class="lbl">Categories</span></div>
+    <div><span class="num">0</span><span class="lbl">Spreadsheets needed</span></div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search" placeholder="Search a formula or KPI...">
+    </div>
+    <div id="cat-list"></div>
+  </aside>
+
+  <main>
+    <div class="panel-head">
+      <h2 id="panel-title">All Categories</h2>
+      <span class="sub" id="panel-count"></span>
+    </div>
+    <div class="grid-formulas" id="grid"></div>
+  </main>
+</div>
+
+<footer>PHD Smart Tools — Media &amp; Finance Calculator · Internal use, PHD Nigeria</footer>
+
+<div class="calc-overlay" id="overlay">
+  <div class="calc-drawer">
+    <div class="calc-head">
+      <button class="close-btn" id="closeBtn">✕</button>
+      <div class="eyebrow" id="d-cat">Category</div>
+      <h3 id="d-name">Formula Name</h3>
+      <div class="formula-strip" id="d-formula">Formula</div>
+    </div>
+    <div class="calc-body">
+      <div id="d-purpose" class="field" style="margin-bottom:20px;"><label>Purpose</label><div style="font-size:13.5px;color:#4B4470;line-height:1.5;" id="d-purpose-text"></div></div>
+      <div id="d-fields"></div>
+      <div class="error-msg" id="d-error">Please fill in all fields with valid numbers.</div>
+      <button class="calc-btn" id="d-calc">Calculate</button>
+      <div class="result-box" id="d-result">
+        <div class="r-label">Result</div>
+        <div class="r-value" id="d-result-value">—</div>
+        <div class="r-purpose" id="d-result-note"></div>
+        <div class="r-extra" id="d-result-extra" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.15);">
+          <div class="r-label" id="d-extra-label" style="color:var(--lavender);"></div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-top:4px;" id="d-extra-value"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============== DATA ============== */
+const DATA = [
+{cat:"Media Planning", items:[
+  {name:"Reach (%)", formula:"(People Reached ÷ Target Audience) × 100", purpose:"Measures audience coverage", unit:"%",
+    inputs:[{k:"reached",l:"People Reached"},{k:"target",l:"Target Audience"}],
+    calc:v=> (v.reached/v.target)*100},
+  {name:"Frequency", formula:"Gross Impressions ÷ Reach Audience", purpose:"Average exposure per person", unit:"x",
+    inputs:[{k:"gross",l:"Gross Impressions"},{k:"reachAud",l:"Reach Audience"}],
+    calc:v=> v.gross/v.reachAud},
+  {name:"Gross Rating Points (GRP)", formula:"Reach × Frequency", purpose:"Overall campaign weight", unit:"GRP",
+    inputs:[{k:"reach",l:"Reach (%)"},{k:"freq",l:"Frequency"}],
+    calc:v=> v.reach*v.freq},
+  {name:"Target Rating Points (TRP)", formula:"Target Reach × Frequency", purpose:"Campaign weight for target audience", unit:"TRP",
+    inputs:[{k:"treach",l:"Target Reach"},{k:"freq",l:"Frequency"}],
+    calc:v=> v.treach*v.freq},
+  {name:"Cost Per Rating Point (CPP)", formula:"Total Cost ÷ GRP", purpose:"Cost efficiency of TV/radio campaigns", unit:"₦",
+    inputs:[{k:"cost",l:"Total Cost (₦)"},{k:"grp",l:"GRP"}],
+    calc:v=> v.cost/v.grp},
+  {name:"Cost Per Thousand (CPM)", formula:"(Campaign Cost ÷ Impressions) × 1,000", purpose:"Cost to reach 1,000 people", unit:"₦",
+    inputs:[{k:"cost",l:"Campaign Cost (₦)"},{k:"imp",l:"Impressions"}],
+    calc:v=> (v.cost/v.imp)*1000},
+  {name:"Cost Per Click (CPC)", formula:"Spend ÷ Clicks", purpose:"Digital advertising efficiency", unit:"₦",
+    inputs:[{k:"spend",l:"Spend (₦)"},{k:"clicks",l:"Clicks"}],
+    calc:v=> v.spend/v.clicks},
+  {name:"Click Through Rate (CTR)", formula:"(Clicks ÷ Impressions) × 100", purpose:"Ad engagement", unit:"%",
+    inputs:[{k:"clicks",l:"Clicks"},{k:"imp",l:"Impressions"}],
+    calc:v=> (v.clicks/v.imp)*100},
+  {name:"Viewability Rate", formula:"(Viewable Impressions ÷ Served Impressions) × 100", purpose:"Visibility of ads", unit:"%",
+    inputs:[{k:"view",l:"Viewable Impressions"},{k:"served",l:"Served Impressions"}],
+    calc:v=> (v.view/v.served)*100},
+  {name:"Cost Per View (CPV)", formula:"Spend ÷ Views", purpose:"Video advertising cost", unit:"₦",
+    inputs:[{k:"spend",l:"Spend (₦)"},{k:"views",l:"Views"}],
+    calc:v=> v.spend/v.views},
+  {name:"Video Completion Rate (VCR)", formula:"Completed Views ÷ Video Starts × 100", purpose:"Video engagement", unit:"%",
+    inputs:[{k:"completed",l:"Completed Views"},{k:"starts",l:"Video Starts"}],
+    calc:v=> (v.completed/v.starts)*100},
+  {name:"Share of Voice (SOV)", formula:"Brand Spend ÷ Category Spend × 100", purpose:"Competitive advertising share", unit:"%",
+    inputs:[{k:"brand",l:"Brand Spend (₦)"},{k:"category",l:"Category Spend (₦)"}],
+    calc:v=> (v.brand/v.category)*100},
+  {name:"Share of Market (SOM)", formula:"Brand Sales ÷ Market Sales × 100", purpose:"Market position", unit:"%",
+    inputs:[{k:"brandSales",l:"Brand Sales"},{k:"marketSales",l:"Market Sales"}],
+    calc:v=> (v.brandSales/v.marketSales)*100},
+  {name:"Effective Reach", formula:"People Reached 3+ Times ÷ Total Audience", purpose:"Effective audience exposure", unit:"",
+    inputs:[{k:"reached3",l:"People Reached 3+ Times"},{k:"total",l:"Total Audience"}],
+    calc:v=> v.reached3/v.total},
+  {name:"Net Reach", formula:"Total Reach − Duplicate Audience", purpose:"Unique audience reached", unit:"",
+    inputs:[{k:"total",l:"Total Reach"},{k:"dup",l:"Duplicate Audience"}],
+    calc:v=> v.total-v.dup},
+]},
+{cat:"Media Buying", items:[
+  {name:"Discount (%)", formula:"(List Price − Purchase Price) ÷ List Price × 100", purpose:"Negotiated savings", unit:"%",
+    inputs:[{k:"list",l:"List Price (₦)"},{k:"purchase",l:"Purchase Price (₦)"}],
+    calc:v=> ((v.list-v.purchase)/v.list)*100},
+  {name:"Savings", formula:"Budget − Actual Cost", purpose:"Financial savings", unit:"₦",
+    inputs:[{k:"budget",l:"Budget (₦)"},{k:"actual",l:"Actual Cost (₦)"}],
+    calc:v=> v.budget-v.actual},
+  {name:"Cost Avoidance", formula:"Forecast Cost − Negotiated Cost", purpose:"Avoided future cost", unit:"₦",
+    inputs:[{k:"forecast",l:"Forecast Cost (₦)"},{k:"negotiated",l:"Negotiated Cost (₦)"}],
+    calc:v=> v.forecast-v.negotiated},
+  {name:"Negotiated Gain", formula:"Original Offer − Final Deal", purpose:"Negotiation performance", unit:"₦",
+    inputs:[{k:"original",l:"Original Offer (₦)"},{k:"final",l:"Final Deal (₦)"}],
+    calc:v=> v.original-v.final},
+  {name:"Fill Rate", formula:"Delivered Units ÷ Ordered Units × 100", purpose:"Supplier delivery performance", unit:"%",
+    inputs:[{k:"delivered",l:"Delivered Units"},{k:"ordered",l:"Ordered Units"}],
+    calc:v=> (v.delivered/v.ordered)*100},
+  {name:"Delivery Rate", formula:"Delivered Impressions ÷ Planned Impressions × 100", purpose:"Campaign fulfillment", unit:"%",
+    inputs:[{k:"delivered",l:"Delivered Impressions"},{k:"planned",l:"Planned Impressions"}],
+    calc:v=> (v.delivered/v.planned)*100},
+  {name:"Under Delivery", formula:"Planned − Delivered", purpose:"Missed delivery", unit:"",
+    inputs:[{k:"planned",l:"Planned"},{k:"delivered",l:"Delivered"}],
+    calc:v=> v.planned-v.delivered},
+  {name:"Over Delivery", formula:"Delivered − Planned", purpose:"Bonus delivery", unit:"",
+    inputs:[{k:"delivered",l:"Delivered"},{k:"planned",l:"Planned"}],
+    calc:v=> v.delivered-v.planned},
+]},
+{cat:"Financial Planning", items:[
+  {name:"Budget Variance", formula:"Actual − Budget", purpose:"Budget difference", unit:"₦",
+    inputs:[{k:"actual",l:"Actual (₦)"},{k:"budget",l:"Budget (₦)"}],
+    calc:v=> v.actual-v.budget},
+  {name:"Variance %", formula:"(Actual − Budget) ÷ Budget × 100", purpose:"Budget performance", unit:"%",
+    inputs:[{k:"actual",l:"Actual (₦)"},{k:"budget",l:"Budget (₦)"}],
+    calc:v=> ((v.actual-v.budget)/v.budget)*100},
+  {name:"Burn Rate", formula:"Spend ÷ Budget × 100", purpose:"Budget consumption", unit:"%",
+    inputs:[{k:"spend",l:"Spend (₦)"},{k:"budget",l:"Budget (₦)"}],
+    calc:v=> (v.spend/v.budget)*100},
+  {name:"Budget Utilization", formula:"Actual Spend ÷ Approved Budget × 100", purpose:"Budget usage", unit:"%",
+    inputs:[{k:"actual",l:"Actual Spend (₦)"},{k:"approved",l:"Approved Budget (₦)"}],
+    calc:v=> (v.actual/v.approved)*100},
+  {name:"Campaign Profit", formula:"Revenue − Campaign Cost", purpose:"Campaign profitability", unit:"₦",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"cost",l:"Campaign Cost (₦)"}],
+    calc:v=> v.revenue-v.cost},
+  {name:"Gross Margin", formula:"(Sales − COGS) ÷ Sales × 100", purpose:"Gross profitability", unit:"%",
+    inputs:[{k:"sales",l:"Sales (₦)"},{k:"cogs",l:"COGS (₦)"}],
+    calc:v=> ((v.sales-v.cogs)/v.sales)*100},
+  {name:"Net Margin", formula:"Net Profit ÷ Revenue × 100", purpose:"Overall profitability", unit:"%",
+    inputs:[{k:"net",l:"Net Profit (₦)"},{k:"revenue",l:"Revenue (₦)"}],
+    calc:v=> (v.net/v.revenue)*100},
+  {name:"EBITDA", formula:"Revenue − Operating Expenses", purpose:"Operating performance", unit:"₦",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"opex",l:"Operating Expenses (₦)"}],
+    calc:v=> v.revenue-v.opex},
+]},
+{cat:"Financial Modeling", items:[
+  {name:"Revenue", formula:"Price × Quantity", purpose:"Total sales", unit:"₦",
+    inputs:[{k:"price",l:"Price (₦)"},{k:"qty",l:"Quantity"}],
+    calc:v=> v.price*v.qty},
+  {name:"Gross Profit", formula:"Revenue − Cost of Sales", purpose:"Gross earnings", unit:"₦",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"cos",l:"Cost of Sales (₦)"}],
+    calc:v=> v.revenue-v.cos},
+  {name:"Net Profit", formula:"Revenue − Expenses", purpose:"Bottom-line earnings", unit:"₦",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"expenses",l:"Expenses (₦)"}],
+    calc:v=> v.revenue-v.expenses},
+  {name:"Operating Profit", formula:"Gross Profit − Operating Expenses", purpose:"Operating earnings", unit:"₦",
+    inputs:[{k:"gross",l:"Gross Profit (₦)"},{k:"opex",l:"Operating Expenses (₦)"}],
+    calc:v=> v.gross-v.opex},
+  {name:"Break-even Point", formula:"Fixed Cost ÷ (Selling Price − Variable Cost)", purpose:"Break-even sales volume", unit:"units",
+    inputs:[{k:"fixed",l:"Fixed Cost (₦)"},{k:"price",l:"Selling Price (₦)"},{k:"variable",l:"Variable Cost (₦)"}],
+    calc:v=> v.fixed/(v.price-v.variable)},
+  {name:"Contribution Margin", formula:"Sales − Variable Cost", purpose:"Contribution to fixed costs", unit:"₦",
+    inputs:[{k:"sales",l:"Sales (₦)"},{k:"variable",l:"Variable Cost (₦)"}],
+    calc:v=> v.sales-v.variable},
+  {name:"Contribution Margin %", formula:"Contribution Margin ÷ Sales × 100", purpose:"Profitability indicator", unit:"%",
+    inputs:[{k:"cm",l:"Contribution Margin (₦)"},{k:"sales",l:"Sales (₦)"}],
+    calc:v=> (v.cm/v.sales)*100},
+  {name:"Cash Flow", formula:"Cash In − Cash Out", purpose:"Liquidity", unit:"₦",
+    inputs:[{k:"in",l:"Cash In (₦)"},{k:"out",l:"Cash Out (₦)"}],
+    calc:v=> v.in-v.out},
+  {name:"Free Cash Flow", formula:"Operating Cash − Capital Expenditure", purpose:"Cash available after investment", unit:"₦",
+    inputs:[{k:"opcash",l:"Operating Cash (₦)"},{k:"capex",l:"Capital Expenditure (₦)"}],
+    calc:v=> v.opcash-v.capex},
+  {name:"Working Capital", formula:"Current Assets − Current Liabilities", purpose:"Operational liquidity", unit:"₦",
+    inputs:[{k:"assets",l:"Current Assets (₦)"},{k:"liab",l:"Current Liabilities (₦)"}],
+    calc:v=> v.assets-v.liab},
+  {name:"Current Ratio", formula:"Current Assets ÷ Current Liabilities", purpose:"Short-term solvency", unit:"x",
+    inputs:[{k:"assets",l:"Current Assets (₦)"},{k:"liab",l:"Current Liabilities (₦)"}],
+    calc:v=> v.assets/v.liab},
+  {name:"Quick Ratio", formula:"(Current Assets − Inventory) ÷ Current Liabilities", purpose:"Immediate liquidity", unit:"x",
+    inputs:[{k:"assets",l:"Current Assets (₦)"},{k:"inv",l:"Inventory (₦)"},{k:"liab",l:"Current Liabilities (₦)"}],
+    calc:v=> (v.assets-v.inv)/v.liab},
+  {name:"Debt Ratio", formula:"Total Debt ÷ Total Assets", purpose:"Financial leverage", unit:"x",
+    inputs:[{k:"debt",l:"Total Debt (₦)"},{k:"assets",l:"Total Assets (₦)"}],
+    calc:v=> v.debt/v.assets},
+  {name:"Debt-to-Equity Ratio", formula:"Total Debt ÷ Equity", purpose:"Capital structure", unit:"x",
+    inputs:[{k:"debt",l:"Total Debt (₦)"},{k:"equity",l:"Equity (₦)"}],
+    calc:v=> v.debt/v.equity},
+  {name:"ROI", formula:"Net Profit ÷ Investment × 100", purpose:"Investment performance", unit:"%",
+    inputs:[{k:"net",l:"Net Profit (₦)"},{k:"investment",l:"Investment (₦)"}],
+    calc:v=> (v.net/v.investment)*100},
+  {name:"ROE", formula:"Net Income ÷ Shareholders' Equity × 100", purpose:"Shareholder return", unit:"%",
+    inputs:[{k:"income",l:"Net Income (₦)"},{k:"equity",l:"Shareholders' Equity (₦)"}],
+    calc:v=> (v.income/v.equity)*100},
+  {name:"ROA", formula:"Net Income ÷ Total Assets × 100", purpose:"Asset efficiency", unit:"%",
+    inputs:[{k:"income",l:"Net Income (₦)"},{k:"assets",l:"Total Assets (₦)"}],
+    calc:v=> (v.income/v.assets)*100},
+  {name:"Asset Turnover", formula:"Sales ÷ Total Assets", purpose:"Asset productivity", unit:"x",
+    inputs:[{k:"sales",l:"Sales (₦)"},{k:"assets",l:"Total Assets (₦)"}],
+    calc:v=> v.sales/v.assets},
+]},
+{cat:"Investment Analysis", items:[
+  {name:"NPV", formula:"Σ(Cash Flow ÷ (1+r)^t) − Initial Investment", purpose:"Project value", unit:"₦",
+    inputs:[{k:"cf",l:"Annual Cash Flow (₦)"},{k:"rate",l:"Discount Rate (% e.g. 12)"},{k:"years",l:"Number of Years"},{k:"initial",l:"Initial Investment (₦)"}],
+    calc:v=>{ const r=v.rate/100; let sum=0; for(let t=1;t<=v.years;t++){ sum += v.cf/Math.pow(1+r,t);} return sum-v.initial; }},
+  {name:"IRR (approx.)", formula:"Discount rate where NPV = 0", purpose:"Investment return", unit:"%",
+    inputs:[{k:"cf",l:"Annual Cash Flow (₦)"},{k:"years",l:"Number of Years"},{k:"initial",l:"Initial Investment (₦)"}],
+    calc:v=>{
+      // iterative approximation via bisection on NPV(rate)=0
+      function npvAt(rate){ let s=0; for(let t=1;t<=v.years;t++){ s+= v.cf/Math.pow(1+rate,t);} return s-v.initial; }
+      let lo=-0.9, hi=5, mid=0;
+      for(let i=0;i<200;i++){ mid=(lo+hi)/2; const val=npvAt(mid); if(Math.abs(val)<0.01) break; if(val>0){lo=mid;}else{hi=mid;} }
+      return mid*100;
+    }},
+  {name:"Payback Period", formula:"Initial Investment ÷ Annual Cash Flow", purpose:"Recovery time", unit:"years",
+    inputs:[{k:"initial",l:"Initial Investment (₦)"},{k:"cf",l:"Annual Cash Flow (₦)"}],
+    calc:v=> v.initial/v.cf},
+  {name:"Profitability Index", formula:"PV of Cash Flows ÷ Initial Investment", purpose:"Investment ranking", unit:"x",
+    inputs:[{k:"pv",l:"PV of Cash Flows (₦)"},{k:"initial",l:"Initial Investment (₦)"}],
+    calc:v=> v.pv/v.initial},
+]},
+{cat:"Economics", items:[
+  {name:"GDP", formula:"C + I + G + (X − M)", purpose:"Economic output", unit:"₦",
+    inputs:[{k:"c",l:"Consumption (C)"},{k:"i",l:"Investment (I)"},{k:"g",l:"Government Spending (G)"},{k:"x",l:"Exports (X)"},{k:"m",l:"Imports (M)"}],
+    calc:v=> v.c+v.i+v.g+(v.x-v.m)},
+  {name:"Inflation Rate", formula:"(Current Price − Previous Price) ÷ Previous Price × 100", purpose:"Price growth", unit:"%",
+    inputs:[{k:"current",l:"Current Price"},{k:"previous",l:"Previous Price"}],
+    calc:v=> ((v.current-v.previous)/v.previous)*100},
+  {name:"Price Elasticity", formula:"%Δ Quantity ÷ %Δ Price", purpose:"Price sensitivity", unit:"",
+    inputs:[{k:"pctQty",l:"%Δ Quantity"},{k:"pctPrice",l:"%Δ Price"}],
+    calc:v=> v.pctQty/v.pctPrice},
+  {name:"Income Elasticity", formula:"%Δ Demand ÷ %Δ Income", purpose:"Income sensitivity", unit:"",
+    inputs:[{k:"pctDemand",l:"%Δ Demand"},{k:"pctIncome",l:"%Δ Income"}],
+    calc:v=> v.pctDemand/v.pctIncome},
+  {name:"Cross Elasticity", formula:"%Δ Demand A ÷ %Δ Price B", purpose:"Product substitution", unit:"",
+    inputs:[{k:"pctDemandA",l:"%Δ Demand A"},{k:"pctPriceB",l:"%Δ Price B"}],
+    calc:v=> v.pctDemandA/v.pctPriceB},
+  {name:"Productivity", formula:"Output ÷ Input", purpose:"Production efficiency", unit:"x",
+    inputs:[{k:"output",l:"Output"},{k:"input",l:"Input"}],
+    calc:v=> v.output/v.input},
+  {name:"Marginal Cost", formula:"Δ Cost ÷ Δ Quantity", purpose:"Cost of one additional unit", unit:"₦",
+    inputs:[{k:"dCost",l:"Δ Cost (₦)"},{k:"dQty",l:"Δ Quantity"}],
+    calc:v=> v.dCost/v.dQty},
+  {name:"Average Cost", formula:"Total Cost ÷ Quantity", purpose:"Unit cost", unit:"₦",
+    inputs:[{k:"total",l:"Total Cost (₦)"},{k:"qty",l:"Quantity"}],
+    calc:v=> v.total/v.qty},
+  {name:"Marginal Revenue", formula:"Δ Revenue ÷ Δ Quantity", purpose:"Revenue from one extra unit", unit:"₦",
+    inputs:[{k:"dRev",l:"Δ Revenue (₦)"},{k:"dQty",l:"Δ Quantity"}],
+    calc:v=> v.dRev/v.dQty},
+  {name:"Consumer Surplus", formula:"Maximum Price − Actual Price", purpose:"Consumer benefit", unit:"₦",
+    inputs:[{k:"max",l:"Maximum Price (₦)"},{k:"actual",l:"Actual Price (₦)"}],
+    calc:v=> v.max-v.actual},
+  {name:"Producer Surplus", formula:"Selling Price − Minimum Acceptable Price", purpose:"Producer benefit", unit:"₦",
+    inputs:[{k:"selling",l:"Selling Price (₦)"},{k:"min",l:"Minimum Acceptable Price (₦)"}],
+    calc:v=> v.selling-v.min},
+]},
+{cat:"Procurement & Negotiation", items:[
+  {name:"Procurement Savings", formula:"Baseline Cost − Award Cost", purpose:"Procurement effectiveness", unit:"₦",
+    inputs:[{k:"baseline",l:"Baseline Cost (₦)"},{k:"award",l:"Award Cost (₦)"}],
+    calc:v=> v.baseline-v.award},
+  {name:"Purchase Price Variance", formula:"(Standard Cost − Actual Cost) × Quantity", purpose:"Purchasing efficiency", unit:"₦",
+    inputs:[{k:"standard",l:"Standard Cost (₦)"},{k:"actual",l:"Actual Cost (₦)"},{k:"qty",l:"Quantity"}],
+    calc:v=> (v.standard-v.actual)*v.qty},
+  {name:"Supplier Reliability", formula:"On-Time Deliveries ÷ Total Deliveries × 100", purpose:"Supplier performance", unit:"%",
+    inputs:[{k:"onTime",l:"On-Time Deliveries"},{k:"total",l:"Total Deliveries"}],
+    calc:v=> (v.onTime/v.total)*100},
+  {name:"Supplier Performance Score", formula:"Quality × Delivery × Cost Score", purpose:"Overall supplier rating", unit:"",
+    inputs:[{k:"quality",l:"Quality Score"},{k:"delivery",l:"Delivery Score"},{k:"cost",l:"Cost Score"}],
+    calc:v=> v.quality*v.delivery*v.cost},
+  {name:"Procurement ROI", formula:"Savings ÷ Procurement Cost × 100", purpose:"Procurement return", unit:"%",
+    inputs:[{k:"savings",l:"Savings (₦)"},{k:"cost",l:"Procurement Cost (₦)"}],
+    calc:v=> (v.savings/v.cost)*100},
+]},
+{cat:"Strategy", items:[
+  {name:"Market Share", formula:"Company Sales ÷ Industry Sales × 100", purpose:"Competitive position", unit:"%",
+    inputs:[{k:"company",l:"Company Sales (₦)"},{k:"industry",l:"Industry Sales (₦)"}],
+    calc:v=> (v.company/v.industry)*100},
+  {name:"CAGR", formula:"((Ending Value ÷ Beginning Value)^(1/n)) − 1", purpose:"Annual growth rate", unit:"%",
+    inputs:[{k:"ending",l:"Ending Value"},{k:"beginning",l:"Beginning Value"},{k:"n",l:"Number of Years (n)"}],
+    calc:v=> (Math.pow(v.ending/v.beginning, 1/v.n)-1)*100},
+  {name:"Customer Lifetime Value (CLV)", formula:"Avg Purchase × Purchase Frequency × Customer Lifespan", purpose:"Customer value", unit:"₦",
+    inputs:[{k:"avg",l:"Avg Purchase Value (₦)"},{k:"freq",l:"Purchase Frequency (per year)"},{k:"lifespan",l:"Customer Lifespan (years)"}],
+    calc:v=> v.avg*v.freq*v.lifespan},
+  {name:"Customer Acquisition Cost (CAC)", formula:"Marketing Spend ÷ New Customers", purpose:"Cost to acquire customers", unit:"₦",
+    inputs:[{k:"spend",l:"Marketing Spend (₦)"},{k:"newCust",l:"New Customers"}],
+    calc:v=> v.spend/v.newCust},
+  {name:"CLV/CAC Ratio", formula:"CLV ÷ CAC", purpose:"Marketing efficiency", unit:"x",
+    inputs:[{k:"clv",l:"CLV (₦)"},{k:"cac",l:"CAC (₦)"}],
+    calc:v=> v.clv/v.cac},
+  {name:"Churn Rate", formula:"Lost Customers ÷ Total Customers × 100", purpose:"Customer loss", unit:"%",
+    inputs:[{k:"lost",l:"Lost Customers"},{k:"total",l:"Total Customers"}],
+    calc:v=> (v.lost/v.total)*100},
+  {name:"Retention Rate", formula:"Retained Customers ÷ Total Customers × 100", purpose:"Customer loyalty", unit:"%",
+    inputs:[{k:"retained",l:"Retained Customers"},{k:"total",l:"Total Customers"}],
+    calc:v=> (v.retained/v.total)*100},
+  {name:"Market Penetration", formula:"Customers ÷ Total Market × 100", purpose:"Market coverage", unit:"%",
+    inputs:[{k:"customers",l:"Customers"},{k:"market",l:"Total Market"}],
+    calc:v=> (v.customers/v.market)*100},
+]},
+{cat:"Media Agency KPIs", items:[
+  {name:"ROAS", formula:"Revenue ÷ Ad Spend", purpose:"Advertising effectiveness", unit:"x",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"spend",l:"Ad Spend (₦)"}],
+    calc:v=> v.revenue/v.spend},
+  {name:"CPA", formula:"Spend ÷ Conversions", purpose:"Cost per acquisition", unit:"₦",
+    inputs:[{k:"spend",l:"Spend (₦)"},{k:"conversions",l:"Conversions"}],
+    calc:v=> v.spend/v.conversions},
+  {name:"Media Efficiency Ratio (MER)", formula:"Revenue ÷ Ad Spend", purpose:"Overall media efficiency", unit:"x",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"spend",l:"Ad Spend (₦)"}],
+    calc:v=> v.revenue/v.spend},
+  {name:"Engagement Rate", formula:"Interactions ÷ Reach × 100", purpose:"Audience engagement", unit:"%",
+    inputs:[{k:"interactions",l:"Interactions"},{k:"reach",l:"Reach"}],
+    calc:v=> (v.interactions/v.reach)*100},
+  {name:"Conversion Rate", formula:"Conversions ÷ Clicks × 100", purpose:"Sales effectiveness", unit:"%",
+    inputs:[{k:"conversions",l:"Conversions"},{k:"clicks",l:"Clicks"}],
+    calc:v=> (v.conversions/v.clicks)*100},
+  {name:"Win Rate", formula:"Won Pitches ÷ Total Pitches × 100", purpose:"Business development success", unit:"%",
+    inputs:[{k:"won",l:"Won Pitches"},{k:"total",l:"Total Pitches"}],
+    calc:v=> (v.won/v.total)*100},
+  {name:"Utilization Rate", formula:"Billable Hours ÷ Available Hours × 100", purpose:"Resource utilization", unit:"%",
+    inputs:[{k:"billable",l:"Billable Hours"},{k:"available",l:"Available Hours"}],
+    calc:v=> (v.billable/v.available)*100},
+  {name:"Billable Rate", formula:"Billable Hours ÷ Total Hours × 100", purpose:"Staff productivity", unit:"%",
+    inputs:[{k:"billable",l:"Billable Hours"},{k:"total",l:"Total Hours"}],
+    calc:v=> (v.billable/v.total)*100},
+  {name:"Revenue per Employee", formula:"Revenue ÷ Number of Employees", purpose:"Workforce productivity", unit:"₦",
+    inputs:[{k:"revenue",l:"Revenue (₦)"},{k:"employees",l:"Number of Employees"}],
+    calc:v=> v.revenue/v.employees},
+  {name:"Forecast Accuracy", formula:"1 − (ABS(Forecast − Actual) ÷ Actual)", purpose:"Forecast quality", unit:"%",
+    inputs:[{k:"forecast",l:"Forecast"},{k:"actual",l:"Actual"}],
+    calc:v=> (1-(Math.abs(v.forecast-v.actual)/v.actual))*100},
+  {name:"Budget Pacing", formula:"Actual Spend ÷ Planned Spend × 100", purpose:"Budget tracking", unit:"%",
+    inputs:[{k:"actual",l:"Actual Spend (₦)"},{k:"planned",l:"Planned Spend (₦)"}],
+    calc:v=> (v.actual/v.planned)*100},
+  {name:"Impression Delivery Rate", formula:"Delivered Impressions ÷ Planned Impressions × 100", purpose:"Campaign delivery performance", unit:"%",
+    inputs:[{k:"delivered",l:"Delivered Impressions"},{k:"planned",l:"Planned Impressions"}],
+    calc:v=> (v.delivered/v.planned)*100},
+]},
+{cat:"Nigerian Tax & Statutory", items:[
+  {name:"VAT Payable", formula:"Output VAT − Input VAT (Rate: 7.5%)", purpose:"Net VAT remittable to FIRS", unit:"₦",
+    inputs:[{k:"sales",l:"Taxable Sales (₦)"},{k:"purchases",l:"Taxable Purchases (₦)"},{k:"rate",l:"VAT Rate % (default 7.5)"}],
+    calc:v=>{ const rate=(v.rate||7.5)/100; const outputVat=v.sales*rate; const inputVat=v.purchases*rate; return outputVat-inputVat; }},
+  {name:"VAT Amount Only", formula:"Taxable Value × VAT Rate", purpose:"The VAT amount itself, on top of a net value", unit:"₦",
+    inputs:[{k:"amount",l:"Taxable Value (₦)"},{k:"rate",l:"VAT Rate % (default 7.5)"}],
+    calc:v=> v.amount*((v.rate||7.5)/100)},
+  {name:"VAT Exclusive → Inclusive", formula:"VAT-Exclusive Amount × (1 + Rate)", purpose:"Adds VAT to a net price", unit:"₦",
+    inputs:[{k:"amount",l:"VAT-Exclusive Amount (₦)"},{k:"rate",l:"VAT Rate % (default 7.5)"}],
+    calc:v=> v.amount*(1+((v.rate||7.5)/100)),
+    extra:v=>({label:"VAT Amount Added", value: v.amount*((v.rate||7.5)/100), unit:"₦"})},
+  {name:"VAT Inclusive → Exclusive", formula:"VAT-Inclusive Amount ÷ (1 + Rate)", purpose:"Strips VAT out of a gross price", unit:"₦",
+    inputs:[{k:"amount",l:"VAT-Inclusive Amount (₦)"},{k:"rate",l:"VAT Rate % (default 7.5)"}],
+    calc:v=> v.amount/(1+((v.rate||7.5)/100)),
+    extra:v=>({label:"VAT Amount Removed", value: v.amount - (v.amount/(1+((v.rate||7.5)/100))), unit:"₦"})},
+  {name:"Companies Income Tax (CIT)", formula:"Assessable Profit × CIT Rate", purpose:"Company tax liability (30% large, 20% medium, 0% small co.)", unit:"₦",
+    inputs:[{k:"profit",l:"Assessable Profit (₦)"},{k:"rate",l:"CIT Rate % (0 / 20 / 30)"}],
+    calc:v=> v.profit*(v.rate/100)},
+  {name:"Tertiary Education Tax (TET)", formula:"Assessable Profit × 3%", purpose:"Education tax on company profit", unit:"₦",
+    inputs:[{k:"profit",l:"Assessable Profit (₦)"}],
+    calc:v=> v.profit*0.03},
+  {name:"Capital Gains Tax (CGT)", formula:"Capital Gain × 10%", purpose:"Tax on disposal of chargeable assets", unit:"₦",
+    inputs:[{k:"gain",l:"Capital Gain (₦)"}],
+    calc:v=> v.gain*0.10},
+  {name:"Withholding Tax (WHT)", formula:"Invoice Value × WHT Rate", purpose:"Tax deducted at source on payments (e.g. 5% contracts, 10% dividends/rent)", unit:"₦",
+    inputs:[{k:"value",l:"Invoice/Payment Value (₦)"},{k:"rate",l:"WHT Rate % (e.g. 5 or 10)"}],
+    calc:v=> v.value*(v.rate/100)},
+  {name:"Personal Income Tax (PIT)", formula:"Progressive bands on (Gross Income − CRA − Pension/NHF) per PITA", purpose:"Annual PAYE/personal tax liability", unit:"₦",
+    inputs:[{k:"gross",l:"Gross Annual Income (₦)"},{k:"pension",l:"Pension Contribution (₦)"},{k:"nhf",l:"NHF Contribution (₦)"}],
+    calc:v=>{
+      const consolidatedRelief = Math.max(200000, v.gross*0.01) + (v.gross*0.20);
+      let taxable = v.gross - consolidatedRelief - (v.pension||0) - (v.nhf||0);
+      if(taxable<0) taxable=0;
+      const bands=[[300000,0.07],[300000,0.11],[500000,0.15],[500000,0.19],[1600000,0.21],[Infinity,0.24]];
+      let tax=0, remaining=taxable;
+      for(const [band,rate] of bands){
+        if(remaining<=0) break;
+        const taxedAtBand=Math.min(remaining,band);
+        tax += taxedAtBand*rate;
+        remaining -= taxedAtBand;
+      }
+      return tax;
+    }},
+  {name:"National Housing Fund (NHF)", formula:"Basic Monthly Salary × 2.5%", purpose:"Statutory housing fund contribution", unit:"₦",
+    inputs:[{k:"basic",l:"Basic Monthly Salary (₦)"}],
+    calc:v=> v.basic*0.025},
+  {name:"Employee Pension Contribution", formula:"(Basic + Housing + Transport) × 8%", purpose:"Minimum statutory employee pension (PRA 2014)", unit:"₦",
+    inputs:[{k:"emoluments",l:"Monthly Pensionable Emoluments (₦)"}],
+    calc:v=> v.emoluments*0.08},
+  {name:"Employer Pension Contribution", formula:"(Basic + Housing + Transport) × 10%", purpose:"Minimum statutory employer pension (PRA 2014)", unit:"₦",
+    inputs:[{k:"emoluments",l:"Monthly Pensionable Emoluments (₦)"}],
+    calc:v=> v.emoluments*0.10},
+  {name:"NSITF Contribution", formula:"Total Monthly Payroll × 1%", purpose:"Employee Compensation Act contribution", unit:"₦",
+    inputs:[{k:"payroll",l:"Total Monthly Payroll (₦)"}],
+    calc:v=> v.payroll*0.01},
+  {name:"Industrial Training Fund (ITF)", formula:"Annual Payroll × 1%", purpose:"Statutory training levy (employers with 5+ staff or ₦50m+ turnover)", unit:"₦",
+    inputs:[{k:"payroll",l:"Annual Payroll (₦)"}],
+    calc:v=> v.payroll*0.01},
+  {name:"Stamp Duty (Fixed-rate instrument)", formula:"Instrument Value × Applicable Rate", purpose:"Duty on agreements, leases, receipts, etc.", unit:"₦",
+    inputs:[{k:"value",l:"Instrument Value (₦)"},{k:"rate",l:"Applicable Rate % (e.g. 1.5 for tenancy)"}],
+    calc:v=> v.value*(v.rate/100)},
+]},
+];
+
+/* ============== STATE ============== */
+let activeCategory = "All";
+let searchTerm = "";
+let currentFormula = null;
+
+const catListEl = document.getElementById('cat-list');
+const gridEl = document.getElementById('grid');
+const panelTitle = document.getElementById('panel-title');
+const panelCount = document.getElementById('panel-count');
+
+const totalFormulas = DATA.reduce((s,c)=>s+c.items.length,0);
+document.getElementById('stat-total').textContent = totalFormulas;
+document.getElementById('stat-cats').textContent = DATA.length;
+document.getElementById('hero-eyebrow').textContent = `${totalFormulas} formulas · ${DATA.length} disciplines`;
+
+function renderCategoryList(){
+  const searching = searchTerm.trim().length > 0;
+  let html = `<button class="cat-btn ${(!searching && activeCategory==='All')?'active':''}" data-cat="All">All Categories <span class="count">${totalFormulas}</span></button>`;
+  DATA.forEach(c=>{
+    html += `<button class="cat-btn ${(!searching && activeCategory===c.cat)?'active':''}" data-cat="${c.cat}">${c.cat} <span class="count">${c.items.length}</span></button>`;
+  });
+  catListEl.innerHTML = html;
+  catListEl.querySelectorAll('.cat-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      activeCategory = btn.dataset.cat;
+      searchTerm = '';
+      document.getElementById('search').value = '';
+      renderCategoryList();
+      renderGrid();
+    });
+  });
+}
+
+function getFiltered(){
+  let pool = [];
+  const searching = searchTerm.trim().length > 0;
+  DATA.forEach(c=>{
+    // While searching, ignore the category filter so results come from everywhere.
+    if(!searching && activeCategory!=='All' && activeCategory!==c.cat) return;
+    c.items.forEach(item=> pool.push({...item, cat:c.cat}));
+  });
+  if(searching){
+    const t = searchTerm.toLowerCase().trim();
+    pool = pool.filter(i=>{
+      const haystack = [
+        i.name,
+        i.purpose,
+        i.cat,
+        i.formula,
+        i.unit,
+        ...(i.inputs ? i.inputs.map(inp=>inp.l) : [])
+      ].filter(Boolean).join(' ').toLowerCase();
+      return haystack.includes(t);
+    });
+  }
+  return pool;
+}
+
+function renderGrid(){
+  const items = getFiltered();
+  const searching = searchTerm.trim().length > 0;
+  panelTitle.textContent = searching
+    ? `Results for "${searchTerm.trim()}"`
+    : (activeCategory==='All' ? 'All Categories' : activeCategory);
+  panelCount.textContent = `${items.length} formula${items.length!==1?'s':''}`;
+  if(items.length===0){
+    gridEl.innerHTML = `<div class="empty-state">No formulas match "${searchTerm}". Try a different term — e.g. a category name, a metric like "VAT" or "CPM", or a word from its purpose.</div>`;
+    return;
+  }
+  gridEl.innerHTML = items.map((it,idx)=>`
+    <div class="f-card" data-idx="${idx}">
+      <h3>${it.name}</h3>
+      <p>${it.purpose}</p>
+    </div>
+  `).join('');
+  gridEl.querySelectorAll('.f-card').forEach((card)=>{
+    card.addEventListener('click', ()=>{
+      const idx = parseInt(card.dataset.idx);
+      openCalculator(items[idx]);
+    });
+  });
+}
+
+/* ============== DRAWER ============== */
+const overlay = document.getElementById('overlay');
+const dCat = document.getElementById('d-cat');
+const dName = document.getElementById('d-name');
+const dFormula = document.getElementById('d-formula');
+const dPurposeText = document.getElementById('d-purpose-text');
+const dFields = document.getElementById('d-fields');
+const dCalc = document.getElementById('d-calc');
+const dResult = document.getElementById('d-result');
+const dResultValue = document.getElementById('d-result-value');
+const dResultNote = document.getElementById('d-result-note');
+const dError = document.getElementById('d-error');
+const dResultExtra = document.getElementById('d-result-extra');
+const dExtraLabel = document.getElementById('d-extra-label');
+const dExtraValue = document.getElementById('d-extra-value');
+
+function openCalculator(item){
+  currentFormula = item;
+  dCat.textContent = item.cat;
+  dName.textContent = item.name;
+  dFormula.textContent = item.formula;
+  dPurposeText.textContent = item.purpose;
+  dFields.innerHTML = item.inputs.map(inp=>`
+    <div class="field">
+      <label>${inp.l}</label>
+      <input type="number" step="any" data-key="${inp.k}" placeholder="Enter value">
+    </div>
+  `).join('');
+  dResult.classList.remove('show');
+  dResult.classList.remove('warn');
+  dResultExtra.style.display = 'none';
+  dError.classList.remove('show');
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeCalculator(){
+  overlay.classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.getElementById('closeBtn').addEventListener('click', closeCalculator);
+overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeCalculator(); });
+
+dCalc.addEventListener('click', ()=>{
+  if(!currentFormula) return;
+  const inputs = dFields.querySelectorAll('input');
+  const values = {};
+  let valid = true;
+  inputs.forEach(inp=>{
+    const val = parseFloat(inp.value);
+    if(isNaN(val)){ valid = false; }
+    values[inp.dataset.key] = val;
+  });
+  if(!valid){
+    dError.classList.add('show');
+    dResult.classList.remove('show');
+    return;
+  }
+  dError.classList.remove('show');
+  let result;
+  try{
+    result = currentFormula.calc(values);
+  }catch(e){
+    result = NaN;
+  }
+  dResult.classList.remove('warn');
+  dResultExtra.style.display = 'none';
+  if(!isFinite(result) || isNaN(result)){
+    dResult.classList.add('warn');
+    dResultValue.textContent = 'Undefined';
+    dResultNote.textContent = 'Check your inputs — this likely involves dividing by zero.';
+  } else {
+    const rounded = Math.abs(result) < 1000 ? Math.round(result*100)/100 : Math.round(result*100)/100;
+    const formatted = rounded.toLocaleString('en-US', {maximumFractionDigits:2});
+    dResultValue.textContent = `${formatted}${currentFormula.unit ? ' '+currentFormula.unit : ''}`;
+    dResultNote.textContent = currentFormula.purpose;
+    if(typeof currentFormula.extra === 'function'){
+      try{
+        const ex = currentFormula.extra(values);
+        if(ex && isFinite(ex.value) && !isNaN(ex.value)){
+          const exFormatted = (Math.round(ex.value*100)/100).toLocaleString('en-US',{maximumFractionDigits:2});
+          dExtraLabel.textContent = ex.label;
+          dExtraValue.textContent = `${exFormatted}${ex.unit ? ' '+ex.unit : ''}`;
+          dResultExtra.style.display = 'block';
+        }
+      }catch(e){ /* ignore */ }
+    }
+  }
+  dResult.classList.add('show');
+});
+
+document.getElementById('search').addEventListener('input', (e)=>{
+  searchTerm = e.target.value;
+  renderCategoryList();
+  renderGrid();
+});
+
+/* ============== CLOCK ============== */
+function tick(){
+  const now = new Date();
+  const opts = {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Africa/Lagos'};
+  document.getElementById('clock').innerHTML = `<small>Lagos</small>${now.toLocaleTimeString('en-GB', opts)}`;
+}
+tick();
+setInterval(tick, 1000);
+
+/* ============== INIT ============== */
+renderCategoryList();
+renderGrid();
+</script>
+</body>
+</html>
